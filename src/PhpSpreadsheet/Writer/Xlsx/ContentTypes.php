@@ -189,6 +189,9 @@ class ContentTypes extends WriterPart
      */
     private function getImageMimeType($filename)
     {
+        // Hacky way to add support for external images. Mime-type doesn't matter for the XLSX exporter.
+        return 'image';
+        
         if (File::fileExists($filename)) {
             $image = getimagesize($filename);
 
