@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpOffice\PhpSpreadsheetTests\Shared\Trend;
 
 use PhpOffice\PhpSpreadsheet\Shared\Trend\LinearBestFit;
@@ -12,20 +14,16 @@ class LinearBestFitTest extends TestCase
     /**
      * @dataProvider providerLinearBestFit
      *
-     * @param mixed $expectedSlope
-     * @param mixed $expectedIntersect
-     * @param mixed $expectedGoodnessOfFit
-     * @param mixed $yValues
-     * @param mixed $xValues
-     * @param mixed $expectedEquation
+     * @param array<float> $yValues
+     * @param array<float> $xValues
      */
     public function testLinearBestFit(
-        $expectedSlope,
-        $expectedIntersect,
-        $expectedGoodnessOfFit,
-        $expectedEquation,
-        $yValues,
-        $xValues
+        array $expectedSlope,
+        array $expectedIntersect,
+        array $expectedGoodnessOfFit,
+        mixed $expectedEquation,
+        array $yValues,
+        array $xValues
     ): void {
         $bestFit = new LinearBestFit($yValues, $xValues);
         $slope = $bestFit->getSlope(1);
@@ -44,7 +42,7 @@ class LinearBestFitTest extends TestCase
         self::assertSame($expectedGoodnessOfFit[1], $bestFit->getGoodnessOfFit());
     }
 
-    public function providerLinearBestFit(): array
+    public static function providerLinearBestFit(): array
     {
         return require 'tests/data/Shared/Trend/LinearBestFit.php';
     }

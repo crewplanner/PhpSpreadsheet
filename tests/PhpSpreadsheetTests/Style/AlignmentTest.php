@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpOffice\PhpSpreadsheetTests\Style;
 
 use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
@@ -10,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 class AlignmentTest extends TestCase
 {
     /** @var ?Spreadsheet */
-    private $spreadsheet;
+    private ?Spreadsheet $spreadsheet = null;
 
     protected function tearDown(): void
     {

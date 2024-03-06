@@ -18,7 +18,7 @@ class ContentTypes extends WriterPart
      *
      * @return string XML Output
      */
-    public function writeContentTypes(Spreadsheet $spreadsheet, $includeCharts = false)
+    public function writeContentTypes(Spreadsheet $spreadsheet, bool $includeCharts = false): string
     {
         // Create XML writer
         $objWriter = null;
@@ -186,6 +186,13 @@ class ContentTypes extends WriterPart
                     }
                 }
             }
+
+            $bgImage = $spreadsheet->getSheet($i)->getBackgroundImage();
+            $mimeType = $spreadsheet->getSheet($i)->getBackgroundMime();
+            $extension = $spreadsheet->getSheet($i)->getBackgroundExtension();
+            if ($bgImage !== '' && !isset($aMediaContentTypes[$mimeType])) {
+                $this->writeDefaultContentType($objWriter, $extension, $mimeType);
+            }
         }
 
         // unparsed defaults
@@ -208,6 +215,8 @@ class ContentTypes extends WriterPart
         return $objWriter->getData();
     }
 
+    private static int $three = 3; // phpstan silliness
+
     /**
      * Get image mime type.
      *
@@ -215,7 +224,7 @@ class ContentTypes extends WriterPart
      *
      * @return string Mime Type
      */
-    private function getImageMimeType($filename)
+    private function getImageMimeType(string $filename): string
     {
         // Hacky way to add support for external images. Mime-type doesn't matter for the XLSX exporter.
         return 'image';
@@ -223,7 +232,7 @@ class ContentTypes extends WriterPart
         if (File::fileExists($filename)) {
             $image = getimagesize($filename);
 
-            return image_type_to_mime_type((is_array($image) && count($image) >= 3) ? $image[2] : 0);
+            return image_type_to_mime_type((is_array($image) && count($image) >= self::$three) ? $image[2] : 0);
         }
 
         throw new WriterException("File $filename does not exist");
@@ -235,7 +244,7 @@ class ContentTypes extends WriterPart
      * @param string $partName Part name
      * @param string $contentType Content type
      */
-    private function writeDefaultContentType(XMLWriter $objWriter, $partName, $contentType): void
+    private function writeDefaultContentType(XMLWriter $objWriter, string $partName, string $contentType): void
     {
         if ($partName != '' && $contentType != '') {
             // Write content type
@@ -254,7 +263,7 @@ class ContentTypes extends WriterPart
      * @param string $partName Part name
      * @param string $contentType Content type
      */
-    private function writeOverrideContentType(XMLWriter $objWriter, $partName, $contentType): void
+    private function writeOverrideContentType(XMLWriter $objWriter, string $partName, string $contentType): void
     {
         if ($partName != '' && $contentType != '') {
             // Write content type

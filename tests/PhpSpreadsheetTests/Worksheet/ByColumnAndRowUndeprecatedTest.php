@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpOffice\PhpSpreadsheetTests\Worksheet;
 
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
@@ -13,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class ByColumnAndRowUndeprecatedTest extends TestCase
 {
     /** @var ?Spreadsheet */
-    private $spreadsheet;
+    private ?Spreadsheet $spreadsheet = null;
 
     protected function tearDown(): void
     {

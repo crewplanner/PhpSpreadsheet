@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpOffice\PhpSpreadsheetTests\Calculation\Functions\Web;
 
 use PhpOffice\PhpSpreadsheet\Settings;
@@ -14,7 +16,7 @@ use Psr\Http\Message\StreamInterface;
 class WebServiceTest extends TestCase
 {
     /** @var ?Spreadsheet */
-    private $spreadsheet;
+    private ?Spreadsheet $spreadsheet = null;
 
     protected function tearDown(): void
     {
@@ -56,7 +58,7 @@ class WebServiceTest extends TestCase
         self::assertEquals($expectedResult, $result);
     }
 
-    public function providerWEBSERVICE(): array
+    public static function providerWEBSERVICE(): array
     {
         return require 'tests/data/Calculation/Web/WEBSERVICE.php';
     }

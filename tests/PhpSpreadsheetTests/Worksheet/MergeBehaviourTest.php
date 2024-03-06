@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpOffice\PhpSpreadsheetTests\Worksheet;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -8,19 +10,13 @@ use PhpOffice\PhpSpreadsheetTests\Functional\AbstractFunctional;
 
 class MergeBehaviourTest extends AbstractFunctional
 {
-    /**
-     * @var array
-     */
-    private $testDataRaw = [
+    private static array $testDataRaw = [
         [1.1, 2.2, '=ROUND(A1+B1, 1)'],
         [4.4, 5.5, '=ROUND(A2+B2, 1)'],
         ['=ROUND(A1+A2, 1)', '=ROUND(B1+B2, 1)', '=ROUND(A3+B3, 1)'],
     ];
 
-    /**
-     * @var array
-     */
-    private $testDataFormatted = [
+    private array $testDataFormatted = [
         ['=DATE(1960, 12, 19)', '=DATE(2022, 09, 15)'],
     ];
 
@@ -35,11 +31,12 @@ class MergeBehaviourTest extends AbstractFunctional
         $mergeRange = 'A1:C3';
         $spreadsheet = new Spreadsheet();
         $worksheet = $spreadsheet->getActiveSheet();
-        $worksheet->fromArray($this->testDataRaw, null, 'A1', true);
+        $worksheet->fromArray(self::$testDataRaw, null, 'A1', true);
         $worksheet->mergeCells($mergeRange);
 
-        $mergeResult = $worksheet->toArray(null, true, true, false);
+        $mergeResult = $worksheet->toArray(null, true, false, false);
         self::assertSame($expectedResult, $mergeResult);
+        $spreadsheet->disconnectWorksheets();
     }
 
     public function testMergeCellsDefaultBehaviourFormatted(): void
@@ -57,6 +54,7 @@ class MergeBehaviourTest extends AbstractFunctional
 
         $mergeResult = $worksheet->toArray(null, true, true, false);
         self::assertSame($expectedResult, $mergeResult);
+        $spreadsheet->disconnectWorksheets();
     }
 
     public function testMergeCellsHideBehaviour(): void
@@ -70,11 +68,12 @@ class MergeBehaviourTest extends AbstractFunctional
         $mergeRange = 'A1:C3';
         $spreadsheet = new Spreadsheet();
         $worksheet = $spreadsheet->getActiveSheet();
-        $worksheet->fromArray($this->testDataRaw, null, 'A1', true);
+        $worksheet->fromArray(self::$testDataRaw, null, 'A1', true);
         $worksheet->mergeCells($mergeRange, Worksheet::MERGE_CELL_CONTENT_HIDE);
 
-        $mergeResult = $worksheet->toArray(null, true, true, false);
+        $mergeResult = $worksheet->toArray(null, true, false, false);
         self::assertSame($expectedResult, $mergeResult);
+        $spreadsheet->disconnectWorksheets();
     }
 
     public function testMergeCellsHideBehaviourFormatted(): void
@@ -92,6 +91,7 @@ class MergeBehaviourTest extends AbstractFunctional
 
         $mergeResult = $worksheet->toArray(null, true, true, false);
         self::assertSame($expectedResult, $mergeResult);
+        $spreadsheet->disconnectWorksheets();
     }
 
     /**
@@ -108,13 +108,14 @@ class MergeBehaviourTest extends AbstractFunctional
 
         $mergeResult = $worksheet->toArray(null, true, true, false);
         self::assertSame($expectedResult, $mergeResult);
+        $spreadsheet->disconnectWorksheets();
     }
 
-    public function mergeCellsMergeBehaviourProvider(): array
+    public static function mergeCellsMergeBehaviourProvider(): array
     {
         return [
             'With Calculated Values' => [
-                $this->testDataRaw,
+                self::$testDataRaw,
                 'A1:C3',
                 [
                     ['1.1 2.2 1.1 4.4 5.5 0 1.1 0 0', null, null],
@@ -162,5 +163,6 @@ class MergeBehaviourTest extends AbstractFunctional
 
         $mergeResult = $worksheet->toArray(null, true, true, false);
         self::assertSame($expectedResult, $mergeResult);
+        $spreadsheet->disconnectWorksheets();
     }
 }

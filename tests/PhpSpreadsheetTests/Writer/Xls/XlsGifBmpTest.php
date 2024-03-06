@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpOffice\PhpSpreadsheetTests\Writer\Xls;
 
 use DateTime;
@@ -11,10 +13,7 @@ use PhpOffice\PhpSpreadsheetTests\Functional\AbstractFunctional;
 
 class XlsGifBmpTest extends AbstractFunctional
 {
-    /**
-     * @var string
-     */
-    private $filename = '';
+    private string $filename = '';
 
     protected function tearDown(): void
     {

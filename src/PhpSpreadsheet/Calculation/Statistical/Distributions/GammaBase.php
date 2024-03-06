@@ -17,7 +17,7 @@ abstract class GammaBase
 
     private const MAX_ITERATIONS = 256;
 
-    protected static function calculateDistribution(float $value, float $a, float $b, bool $cumulative)
+    protected static function calculateDistribution(float $value, float $a, float $b, bool $cumulative): float
     {
         if ($cumulative) {
             return self::incompleteGamma($a, $value / $b) / self::gammaValue($a);
@@ -26,6 +26,7 @@ abstract class GammaBase
         return (1 / ($b ** $a * self::gammaValue($a))) * $value ** ($a - 1) * exp(0 - ($value / $b));
     }
 
+    /** @return float|string */
     protected static function calculateInverse(float $probability, float $alpha, float $beta)
     {
         $xLo = 0;
@@ -38,6 +39,9 @@ abstract class GammaBase
         while ((abs($dx) > Functions::PRECISION) && (++$i <= self::MAX_ITERATIONS)) {
             // Apply Newton-Raphson step
             $result = self::calculateDistribution($x, $alpha, $beta, true);
+            if (!is_float($result)) {
+                return ExcelError::NA();
+            }
             $error = $result - $probability;
 
             if ($error == 0.0) {
@@ -50,6 +54,9 @@ abstract class GammaBase
 
             $pdf = self::calculateDistribution($x, $alpha, $beta, false);
             // Avoid division by zero
+            if (!is_float($pdf)) {
+                return ExcelError::NA();
+            }
             if ($pdf !== 0.0) {
                 $dx = $error / $pdf;
                 $xNew = $x - $dx;
@@ -121,7 +128,7 @@ abstract class GammaBase
         return exp(0 - $tmp + log(self::SQRT2PI * $summer / $x));
     }
 
-    private const  LG_D1 = -0.5772156649015328605195174;
+    private const LG_D1 = -0.5772156649015328605195174;
 
     private const LG_D2 = 0.4227843350984671393993777;
 
@@ -209,9 +216,10 @@ abstract class GammaBase
     private const PNT68 = 0.6796875;
 
     // Function cache for logGamma
-    private static $logGammaCacheResult = 0.0;
 
-    private static $logGammaCacheX = 0.0;
+    private static float $logGammaCacheResult = 0.0;
+
+    private static float $logGammaCacheX = 0.0;
 
     /**
      * logGamma function.
@@ -292,7 +300,7 @@ abstract class GammaBase
         return $res;
     }
 
-    private static function logGamma1(float $y)
+    private static function logGamma1(float $y): float
     {
         // ---------------------
         //    EPS .LT. X .LE. 1.5
@@ -325,7 +333,7 @@ abstract class GammaBase
         return $corr + $xm2 * (self::LG_D2 + $xm2 * ($xnum / $xden));
     }
 
-    private static function logGamma2(float $y)
+    private static function logGamma2(float $y): float
     {
         // ---------------------
         //    1.5 .LT. X .LE. 4.0
@@ -341,7 +349,7 @@ abstract class GammaBase
         return $xm2 * (self::LG_D2 + $xm2 * ($xnum / $xden));
     }
 
-    protected static function logGamma3(float $y)
+    protected static function logGamma3(float $y): float
     {
         // ----------------------
         //    4.0 .LT. X .LE. 12.0
@@ -357,7 +365,7 @@ abstract class GammaBase
         return self::LG_D4 + $xm4 * ($xnum / $xden);
     }
 
-    protected static function logGamma4(float $y)
+    protected static function logGamma4(float $y): float
     {
         // ---------------------------------
         //    Evaluate for argument .GE. 12.0

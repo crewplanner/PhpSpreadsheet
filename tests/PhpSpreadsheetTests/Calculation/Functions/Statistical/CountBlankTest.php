@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpOffice\PhpSpreadsheetTests\Calculation\Functions\Statistical;
 
 use PhpOffice\PhpSpreadsheet\Calculation\Exception as CalcException;
@@ -8,15 +10,13 @@ class CountBlankTest extends AllSetupTeardown
 {
     /**
      * @dataProvider providerCOUNTBLANK
-     *
-     * @param mixed $expectedResult
      */
-    public function testCOUNTBLANK($expectedResult, ...$args): void
+    public function testCOUNTBLANK(mixed $expectedResult, mixed ...$args): void
     {
         $this->runTestCaseNoBracket('COUNTBLANK', $expectedResult, ...$args);
     }
 
-    public function providerCOUNTBLANK(): array
+    public static function providerCOUNTBLANK(): array
     {
         return require 'tests/data/Calculation/Statistical/COUNTBLANK.php';
     }
